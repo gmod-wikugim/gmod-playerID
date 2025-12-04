@@ -2,7 +2,7 @@ local function includeCl(path) AddCSLuaFile(path) if CLIENT then include(path) e
 local function includeSv(path) if SERVER then include(path) end end
 local function includeSh(path) AddCSLuaFile(path) include(path) end
 
-playerID = playerID or {} ---@class playerID
+player_id = player_id or {} ---@class player_id
 
 includeSh("sh_player.lua")
 

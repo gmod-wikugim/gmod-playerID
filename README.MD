@@ -2,9 +2,18 @@
 
 Meta examples
 ```lua
-local ply = LocalPlayer()
 --- Return Current PlayerID: CharacterID or SteamID64 if character system don't exists
+local ply = LocalPlayer()
 print( ply:PlayerID() ) --> 1
+```
+
+Search example
+```lua
+--- Send message to player by PlayerID
+local ply = player_id.GetPlayerFromID("1")
+if IsValid(ply) then
+    ply:ChatPrint("Hello World!")
+end
 ```
 
 Hooks examples
@@ -20,7 +29,12 @@ hook.Add("playerID:OnCharacterSaved", "playerID:LogCharacterSaved", function(cha
 end)
 
 -- Player when character is loaded
-hook.Add("playerID:OnCharacterLoad", "playerID:LogCharacterLoad", function(characterId, ply)
+hook.Add("playerID:OnCharacterLoad", "playerID:LogCharacterLoad", function(characterId, ply
     print("[playerID] Character loaded with ID:", characterId, "for player:", ply:Nick())
+end)
+
+-- Player when characted leave
+hook.Add("playerID:OnCharactedLeave", "playerID:LogCharacterLeave", function(characterId, ply)
+    print("[playerID] Character leave with ID:", characterId, "for player:", ply:Nick())
 end)
 ```
