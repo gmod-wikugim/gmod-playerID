@@ -11,7 +11,7 @@ local IsValid = IsValid
 
 -- Function GetPlayerID - Get the player's ID based on installed frameworks
 ---@return string
-function PLAYER:GetPlayerID()
+function PLAYER:PlayerID()
     if ACC2 then -- Advanced Character Creator - Create infinite characters
         local playerID = ACC2.GetNWVariables("characterId", self)
         assert(playerID, "ACC2 is installed but no character ID found for player " .. self:Nick())
@@ -63,27 +63,14 @@ function player_id.GetPlayerFromID(playerID, bOnlyCached)
     return nil
 end
 
--- Cache palyer entities for SteamID, SteamID64
-hook.Add("PlayerInitialSpawn", "playerID:CachePlayerEntity_SteamID", function(ply)
-    player_id.mt_CachedPlayerEntities_SteamID[ply:SteamID()] = ply
-    player_id.mt_CachedPlayerEntities_SteamID64[ply:SteamID64()] = ply
-end)
-
-
--- Cache player entities on character load and clear on disconnect
-hook.Add("playerID:OnCharacterLoad", "playerID:CachePlayerEntity", function(playerID, ply)
-    local playerID_string = tostring(playerID)
-
-    player_id.mt_CachedPlayerEntities[playerID_string] = ply
-end)
-
--- Clear cached player entity on disconnect
-hook.Add("PlayerDisconnected", "playerID:ClearCachedPlayerEntity", function(ply)
-    local playerID = ply:GetPlayerID()
-
-    hook.Run("playerID:OnCharacterLeave", playerID, ply)
-    player_id.mt_CachedPlayerEntities[playerID] = nil
-    player_id.mt_CachedPlayerEntities_SteamID[ply:SteamID()] = nil
-    player_id.mt_CachedPlayerEntities_SteamID64[ply:SteamID64()] = nil
-end)
-
+-- Function to check current integration
+---@return "ACC2"|"Helix"|"SteamID64"
+function player_id.GetCurrentIntegration()
+    if ACC2 then
+        return "ACC2"
+    elseif ix then
+        return "Helix"
+    else
+        return "SteamID64"
+    end
+end

@@ -5,5 +5,6 @@ local function includeSh(path) AddCSLuaFile(path) include(path) end
 player_id = player_id or {} ---@class player_id
 
 includeSh("sh_player.lua")
+includeSv("sv_player.lua")
 
 includeSv("integrations/sv_acc2.lua")
