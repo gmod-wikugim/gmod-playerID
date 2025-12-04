@@ -1,4 +1,7 @@
 player_id.mt_CachedPlayerEntities = player_id.mt_CachedPlayerEntities or {} ---@type table<string, Player>
+player_id.mt_CachedPlayerEntities_SteamID = player_id.mt_CachedPlayerEntities_SteamID or {} ---@type table<string, Player>
+player_id.mt_CachedPlayerEntities_SteamID64 = player_id.mt_CachedPlayerEntities_SteamID64 or {} ---@type table<string, Player>
+
 
 local PLAYER = FindMetaTable("Player") ---@class Player
 
@@ -39,13 +42,17 @@ function PLAYER:GetPlayerID()
 end
 
 -- Function to get Player entity from PlayerID, don't use in performance critical code (like Paint, Think, etc)
+-- Also accept SteamID and SteamID64 for convenience
 ---@param playerID string
+---@param bOnlyCached boolean|nil If true, only return cached player entities
 ---@return Player?
-function player_id.GetPlayerFromID(playerID)
+function player_id.GetPlayerFromID(playerID, bOnlyCached)
     local cachedPlayer = player_id.mt_CachedPlayerEntities[playerID]
     if IsValid(cachedPlayer) then
         return cachedPlayer
     end
+
+    if bOnlyCached then return nil end
 
     for _, ply in player.Iterator() do
         if ply:GetPlayerID() == playerID then
@@ -55,6 +62,12 @@ function player_id.GetPlayerFromID(playerID)
 
     return nil
 end
+
+-- Cache palyer entities for SteamID, SteamID64
+hook.Add("PlayerInitialSpawn", "playerID:CachePlayerEntity_SteamID", function(ply)
+    player_id.mt_CachedPlayerEntities_SteamID[ply:SteamID()] = ply
+    player_id.mt_CachedPlayerEntities_SteamID64[ply:SteamID64()] = ply
+end)
 
 
 -- Cache player entities on character load and clear on disconnect
@@ -70,5 +83,7 @@ hook.Add("PlayerDisconnected", "playerID:ClearCachedPlayerEntity", function(ply)
 
     hook.Run("playerID:OnCharacterLeave", playerID, ply)
     player_id.mt_CachedPlayerEntities[playerID] = nil
+    player_id.mt_CachedPlayerEntities_SteamID[ply:SteamID()] = nil
+    player_id.mt_CachedPlayerEntities_SteamID64[ply:SteamID64()] = nil
 end)
 
