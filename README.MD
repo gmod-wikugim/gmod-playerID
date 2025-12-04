@@ -1,5 +1,9 @@
 # Example of usage:
 
+Concommands:
+- playerid_fetch_offline_player_data playerID
+- playerid_fetch_character_list_by_steamid64 characterID
+
 Meta examples
 ```lua
 --- Return Current PlayerID: CharacterID or SteamID64 if character system don't exists
