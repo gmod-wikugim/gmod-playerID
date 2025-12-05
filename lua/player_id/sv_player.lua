@@ -103,7 +103,7 @@ end)
 
 -- Clear cached player entity on disconnect
 hook.Add("PlayerDisconnected", "playerID:ClearCachedPlayerEntity", function(ply)
-    local playerID = ply:GetPlayerID()
+    local playerID = ply:PlayerID()
 
     hook.Run("playerID:OnCharacterLeave", playerID, ply)
     player_id.mt_CachedPlayerEntities[playerID] = nil

@@ -9,32 +9,45 @@ local assert = assert
 local tostring = tostring
 local IsValid = IsValid
 
--- Function GetPlayerID - Get the player's ID based on installed frameworks
----@return string
-function PLAYER:PlayerID()
+
+
+-- Function PlayerID - Get the player's ID based on installed frameworks
+---@overload fun(bAssert: true): string
+---@overload fun(bNoAssert: false|nil): string
+function PLAYER:PlayerID(bAssert)
+    if bAssert == nil then bAssert = false end
+
     if ACC2 then -- Advanced Character Creator - Create infinite characters
         local playerID = ACC2.GetNWVariables("characterId", self)
+        if !bAssert and not playerID then return nil end
         assert(playerID, "ACC2 is installed but no character ID found for player " .. self:Nick())
 
         local playerID_string = tostring(playerID)
+        if !bAssert and not playerID_string then return nil end
         assert(playerID_string, "Character ID found but could not convert to string for player " .. self:Nick())
 
         return playerID_string
     elseif ix then -- Helix framework
         local character = self:GetCharacter()
+        if !bAssert and not character then return nil end
         assert(character, "Helix is installed but no character found for player " .. self:Nick())
+
         local playerID = character:GetID()
+        if !bAssert and not playerID then return nil end
         assert(playerID, "Helix character found but no ID for player " .. self:Nick())
 
         local playerID_string = tostring(playerID)
+        if !bAssert and not playerID_string then return nil end
         assert(playerID_string, "Character ID found but could not convert to string for player " .. self:Nick())
 
         return playerID_string
     else
         local playerID = self:SteamID64()
+        if !bAssert and not playerID then return nil end
         assert(playerID, "No SteamID64 found for player " .. self:Nick())
 
         local playerID_string = tostring(playerID)
+        if !bAssert and not playerID_string then return nil end
         assert(playerID_string, "SteamID64 found but could not convert to string for player " .. self:Nick())
 
         return playerID_string
@@ -55,7 +68,7 @@ function player_id.GetPlayerFromID(playerID, bOnlyCached)
     if bOnlyCached then return nil end
 
     for _, ply in player.Iterator() do
-        if ply:GetPlayerID() == playerID then
+        if ply:PlayerID() == playerID then
             return ply
         end
     end
