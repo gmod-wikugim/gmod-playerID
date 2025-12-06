@@ -76,14 +76,43 @@ function player_id.GetPlayerFromID(playerID, bOnlyCached)
     return nil
 end
 
--- Function to check current integration
----@return "ACC2"|"Helix"|"SteamID64"
-function player_id.GetCurrentIntegration()
-    if ACC2 then
-        return "ACC2"
-    elseif ix then
-        return "Helix"
-    else
-        return "SteamID64"
+-- Function Get SteamID by playerID
+---@param playerID string
+---@return string?
+function player_id.GetSteamIDByPlayerID(playerID)
+    local ply = player_id.GetPlayerFromID(playerID, true)
+    if IsValid(ply) then
+        return ply:SteamID()
+    end
+
+    return nil
+end
+
+-- Function Get SteamID64 by playerID
+---@param playerID string
+---@return string?
+function player_id.GetSteamID64ByPlayerID(playerID)
+    local ply = player_id.GetPlayerFromID(playerID, true)
+    if IsValid(ply) then
+        return ply:SteamID64()
     end
 end
+
+-- Function to check current integration
+---@return string
+function player_id.GetCurrentIntegration()
+    return GetGlobal2String("player_id_integration", "DEFAULT")
+end
+
+-- Concommand to print current integration
+concommand.Add("playerid_current_integration", function(ply, cmd, args)
+    local function message(msg)
+        if IsValid(ply) then
+            ply:ChatPrint("[playerID] " .. msg)
+        else
+            print("[playerID] " .. msg)
+        end
+    end
+
+    message("Current playerID integration: " .. player_id.GetCurrentIntegration())
+end)
