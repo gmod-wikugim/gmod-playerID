@@ -175,3 +175,20 @@ do -- Current Integration Detection and Management
     if gmod.GetGamemode() != nil then player_id.UpdateCurrentIntegration() end
 
 end
+
+
+hook.Add("InitPostEntity", "playerID:CheckLatestVersion", function()
+    http.Fetch("https://raw.githubusercontent.com/gmod-wikugim/gmod-playerID/refs/heads/master/.version", function(body, len, headers, code)
+        if code != 200 then return end
+
+        local currentVersion = file.Read("player_id.version", "GAME")
+
+        local latestVersion = string.Trim(body)
+        if latestVersion == "" or #latestVersion > 16 then return end -- Invalid version
+
+        if latestVersion != currentVersion then
+            print("[playerID] A new version of playerID is available! Current version: " .. currentVersion .. ", Latest version: " .. latestVersion)
+            print("[playerID] Download the latest version from https://github.com/gmod-wikugim/gmod-playerID")
+        end
+    end)
+end)
