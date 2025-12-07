@@ -32,7 +32,7 @@ end
 ---@field SteamID string
 ---@field name string
 
----@alias player_id.CharacterList table<string, player_id.CharacterInfo[]>
+---@alias player_id.CharacterList table<string, player_id.CharacterInfo>
 
 ---@alias palyer_id.CharacterListsBySteamID64s table<string, player_id.CharacterList[]>
 
