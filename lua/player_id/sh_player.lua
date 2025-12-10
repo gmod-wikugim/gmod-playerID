@@ -61,7 +61,7 @@ end
 ---@return Player?
 function player_id.GetPlayerFromID(playerID, bOnlyCached)
     local cachedPlayer = player_id.mt_CachedPlayerEntities[playerID]
-    if IsValid(cachedPlayer) then
+    if IsValid(cachedPlayer) and cachedPlayer:PlayerID() == playerID then
         return cachedPlayer
     end
 
