@@ -65,10 +65,27 @@ function player_id.GetOfflinePlayerDataByPlayerID(playerID, callback)
     INTEGRATION:FetchPlayerIDFromCharacterIDs(playerID, callback)
 end
 
+-- Function Get offline player data by playerID, single version
+---@overload fun(playerID: string, callback: fun(suc: true, characterInfo: player_id.CharacterInfo))
+---@overload fun(playerID: string, callback: fun(suc: false))
+function player_id.GetOfflinePlayerDataByPlayerIDSingle(playerID, callback)
+    assert(playerID, "player_id.GetOfflinePlayerDataByPlayerIDSingle: playerID is required")
+    assert(type(playerID) == "string", "player_id.GetOfflinePlayerDataByPlayerIDSingle: playerID must be a string")
+    assert(type(callback) == "function", "player_id.GetOfflinePlayerDataByPlayerIDSingle: callback must be a function")
+
+    player_id.GetOfflinePlayerDataByPlayerID(playerID, function(suc, characterList)
+        if suc and characterList then
+            local characterInfo = characterList[playerID]
+            callback(true, characterInfo)
+        else
+            callback(false)
+        end
+    end)
+end
 
 -- Function Search offline player data by name
 ---@overload fun(name: string, callback: fun(suc: true, characterList: player_id.CharacterList))
----@overload fun(name: string, callback: fun(suc: false|nil))
+---@overload fun(name: string, callback: fun(suc: false))
 function player_id.SearchOfflinePlayerDataByName(name, callback)
     if player_id.GetCurrentIntegration() == "SteamID64" then
         if callback then
@@ -101,6 +118,24 @@ function player_id.GetCharacterListBySteamID64(steamID64, callback)
     local INTEGRATION = player_id.GetCurrentIntegrationTable()
 
     INTEGRATION:FetchCharacterListBySteamID64s(steamID64, callback)
+end
+
+-- Function Get Character List by SteamID64, single version
+---@overload fun(steamID64: string, callback: fun(suc: true, characterList: player_id.CharacterList))
+---@overload fun(steamID64: string, callback: fun(suc: false))
+function player_id.GetCharacterListBySteamID64Single(steamID64, callback)
+    assert(steamID64, "player_id.GetCharacterListBySteamID64Single: steamID64 is required")
+    assert(type(steamID64) == "string", "player_id.GetCharacterListBySteamID64Single: steamID64 must be a string")
+    assert(type(callback) == "function", "player_id.GetCharacterListBySteamID64Single: callback must be a function")
+
+    player_id.GetCharacterListBySteamID64(steamID64, function(suc, characterLists)
+        if suc and characterLists then
+            local characterList = characterLists[steamID64]
+            callback(true, characterList)
+        else
+            callback(false)
+        end
+    end)
 end
 
 
